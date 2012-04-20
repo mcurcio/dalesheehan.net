@@ -70,13 +70,13 @@ $(function (){
 			$nameplate_panel.queue("slide", function (next){
 				$(this).animate({
 					top: (windowHeight - nameplatePanelHeight) / 2
-				}, 500, next);
+				}, 300, next);
 			}).dequeue("slide");
 
 			$message_panel.queue("slide", function (next){
 				$(this).animate({
 					top: windowHeight
-				}, 500, next);
+				}, 300, next);
 			}).dequeue("slide");
 		} else {
 			$(this).find("span.active").show();
@@ -85,13 +85,13 @@ $(function (){
 			$nameplate_panel.queue("slide", function (next){
 				$(this).animate({
 					top: (windowHeight - nameplatePanelHeight - messagePanelHeight) / 2
-				}, 500, next);
+				}, 300, next);
 			}).dequeue("slide");
 
 			$message_panel.queue("slide", function (next){
 				$(this).animate({
 					top: (windowHeight - nameplatePanelHeight + messagePanelHeight) / 2
-				}, 500, next);
+				}, 300, next);
 			}).dequeue("slide");
 
 		}
