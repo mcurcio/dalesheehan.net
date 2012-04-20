@@ -1,0 +1,105 @@
+<html>
+	<head>
+		<title>Test</title>
+
+		<style type="text/css">
+			* { margin: 0; padding: 0; list-style-type: none; }
+
+			body { background: url(assets/tiles.jpg) repeat center center; }
+			#panel { position: absolute; background: url(assets/nameplate.png) no-repeat; width: 640px; height: 246px; z-index: 110; }
+			#nameplate { display: none; position: absolute; top: 0; left: 0; font-size: 32px; text-indent: 100%; white-space: nowrap; overflow: hidden; }
+			#titles { display: none; position: absolute; bottom: 20px; left: 20px; }
+			#titles > ul > li { display: block; text-transform: uppercase; }
+			#social { position: absolute; bottom: 70px; right: 50px; }
+			#social > ul > li { display: block; width: 80px; height: 80px; float: right; margin-left: 20px; text-indent: 100%; white-space: nowrap; overflow: hidden; }
+			#social li.facebook { background: url(assets/facebook.png) no-repeat; }
+			#social li.facebook:hover { background: url(assets/facebook-active.png) no-repeat; }
+			#social li.linkedin { background: url(assets/linkedin.png) no-repeat; }
+			#social li.linkedin:hover { background: url(assets/linkedin-active.png) no-repeat; }
+			#social li.message { background: url(assets/email.png) no-repeat; }
+			#social li.message:hover { background: url(assets/email-active.png) no-repeat; }
+			#background-tile-noise > div { position: absolute; width: 72px; height: 72px; overflow: hidden; }
+			#background-tile-noise > div > img { position: absolute; }
+		</style>
+
+		<script type="text/javascript">
+			window.addEventListener("load", function (){
+				var panel = document.getElementById("panel");
+				var noise = document.getElementById("background-tile-noise");
+
+				var resize = function (){
+					panel.style.top = (window.innerHeight - parseInt(panel.offsetHeight, 10)) / 2;
+					panel.style.left = (window.innerWidth - parseInt(panel.offsetWidth, 10)) / 2;
+				};
+
+				window.addEventListener("resize", resize);
+				resize();
+				return;
+
+				var TILE_WIDTH = 72;
+				var TILE_HEIGHT = 72;
+				for (var i = 0; i < 10; i++){
+					var wrapper = document.createElement("div");
+
+					var img = document.createElement("img");
+					img.id = "tile-" + i;
+					img.addEventListener("load", (function (wrapper, img){ 
+						return function (){
+							var width = img.width;
+							var height = img.height;
+
+							var tiles_down = Math.floor(height/TILE_HEIGHT);
+							var tiles_across = Math.floor(width/TILE_WIDTH);
+
+							var row = Math.floor(Math.random() * tiles_down);
+							var col = Math.floor(Math.random() * tiles_across);
+
+							img.style.top = (0 - row*TILE_WIDTH) + "px";
+							img.style.left = (0 - col*TILE_HEIGHT) + "px";
+
+							wrapper.style.top = Math.random()*1000 + "px";
+							wrapper.style.left = Math.random()*600 + "px";
+						};
+					})(wrapper, img));
+
+					wrapper.appendChild(img);
+					noise.appendChild(wrapper);
+
+					img.src = "assets/tiles.jpg";
+				}
+			});
+		</script>
+	</head>
+
+	<body>
+		<div id="page-wrapper">
+			<div id="page">
+				<div id="panel-wrapper">
+					<div id="panel">
+						<div id="panel-background"></div>
+						<div id="nameplate">Dale Sheehan</div>
+
+						<div id="titles">
+							<ul>
+								<li>Producer</li>
+								<li>Designer</li>
+								<li>Imagineer</li>
+							</ul>
+						</div>
+
+						<div id="social">
+							<ul>
+								<li class="message"><a href="#">Message</a></li>
+								<li class="linkedin"><a href="#">LinkedIn</a></li>
+								<li class="facebook"><a href="#">Facebook</a></li>
+							</ul>
+						</div>
+					</div>
+
+				</div>
+
+				<div id="background-tile-noise"></div>
+			</div>
+		</div>
+	</body>
+</html>
