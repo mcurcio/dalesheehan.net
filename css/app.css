@@ -1,0 +1,15 @@
+
+body { background: url(../assets/tiles.jpg) repeat center center; }
+#nameplate-panel { position: absolute; background: url(../assets/nameplate.png) no-repeat; width: 640px; height: 246px; margin-top: 60px; z-index: 110; }
+#titles { display: none; position: absolute; bottom: 20px; left: 20px; }
+#titles > ul > li { display: block; text-transform: uppercase; }
+#social { position: absolute; bottom: 146px; right: 50px; }
+#social > a { display: block; position: absolute; width: 80px; height: 80px; background: url(../assets/social.png) no-repeat 0 0; overflow: hidden; }
+#social > a > span { display: block; position: absolute; width: 100%; height: 100%; background: url(../assets/social.png) no-repeat 0 0; }
+#social > a.facebook { right: 184px; background-position-x: 0; }
+#social > a.facebook span.highlight { background-position-x: -80px; }
+#social > a.linkedin { right: 92px; background-position-x: -160px; }
+#social > a.linkedin span.highlight { background-position-x: -240px; }
+#social > a.email { right: 0; background-position-x: -320px; }
+#social > a.email span.highlight { background-position-x: -400px; }
+#social > a.email span.active { background-position-x: -480px; }
