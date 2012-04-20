@@ -31,15 +31,17 @@ $(function (){
 	};
 	updateMessagePanelMetrics();
 
-	var resize = function (){
-		/*console.log("resize", 
-			"window: " + windowHeight + "x" + windowWidth,
-			"panel: " + nameplatePanelHeight + "x" + nameplatePanelWidth
-		);*/
+	// now that all dimensions have been calculated, some setup
+	$message_panel.css("top", windowHeight);
 
+	var resize = function (){
 		$nameplate_panel.css({
 			top: (windowHeight - nameplatePanelHeight) / 2,
 			left: (windowWidth - nameplatePanelWidth) / 2
+		});
+
+		$message_panel.css({
+			left: (windowWidth - messagePanelWidth) / 2
 		});
 	};
 	resize();
@@ -50,9 +52,9 @@ $(function (){
 	});
 
 	$social_buttons.find("a").hover(function (){
-		$(this).find("span.highlight").stop(true, false).fadeIn();
+		$(this).find("span.highlight").stop(true, false).fadeIn(250);
 	}, function (){
-		$(this).find("span.highlight").stop(true, false).fadeOut();
+		$(this).find("span.highlight").stop(true, false).fadeOut(200);
 	});
 
 	$social_buttons.find("span").hide();
@@ -62,9 +64,36 @@ $(function (){
 		e.preventDefault();
 
 		if(messagePanelIsDisplayed){
+			$(this).find("span.highlight").fadeOut(0);
 			$(this).find("span.active").hide();
+
+			$nameplate_panel.queue("slide", function (next){
+				$(this).animate({
+					top: (windowHeight - nameplatePanelHeight) / 2
+				}, 500, next);
+			}).dequeue("slide");
+
+			$message_panel.queue("slide", function (next){
+				$(this).animate({
+					top: windowHeight
+				}, 500, next);
+			}).dequeue("slide");
 		} else {
 			$(this).find("span.active").show();
+			$(this).find("span.highlight").fadeOut(0);
+
+			$nameplate_panel.queue("slide", function (next){
+				$(this).animate({
+					top: (windowHeight - nameplatePanelHeight - messagePanelHeight) / 2
+				}, 500, next);
+			}).dequeue("slide");
+
+			$message_panel.queue("slide", function (next){
+				$(this).animate({
+					top: (windowHeight - nameplatePanelHeight + messagePanelHeight) / 2
+				}, 500, next);
+			}).dequeue("slide");
+
 		}
 
 		messagePanelIsDisplayed = !messagePanelIsDisplayed;

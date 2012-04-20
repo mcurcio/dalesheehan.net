@@ -1,5 +1,29 @@
+/* http://meyerweb.com/eric/tools/css/reset/ v2.0 | 20110126 License: none (public domain) */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+itime, mark, audio, video { margin: 0; padding: 0; border: 0; font-size: 100%; font: inherit; vertical-align: baseline; }
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section { display: block; }
+body { line-height: 1; }
+ol, ul { list-style: none; }
+blockquote, q { quotes: none; }
+blockquote:before, blockquote:after,
+q:before, q:after { content: ''; content: none; }
+table { border-collapse: collapse; border-spacing: 0; }
 
-body { background: url(../assets/tiles.jpg) repeat center center; }
+/* @author Matt Curcio */
+body { background: url(../assets/tiles.jpg) repeat center center; overflow: hidden; }
+
 #nameplate-panel { position: absolute; background: url(../assets/nameplate.png) no-repeat; width: 640px; height: 246px; margin-top: 60px; z-index: 110; }
 #titles { display: none; position: absolute; bottom: 20px; left: 20px; }
 #titles > ul > li { display: block; text-transform: uppercase; }
@@ -13,3 +37,5 @@ body { background: url(../assets/tiles.jpg) repeat center center; }
 #social > a.email { right: 0; background-position-x: -320px; }
 #social > a.email span.highlight { background-position-x: -400px; }
 #social > a.email span.active { background-position-x: -480px; }
+
+#message-panel { position: absolute; width: 640px; height: 329px; background: url(../assets/message-panel.png) no-repeat; }
