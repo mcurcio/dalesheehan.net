@@ -63,6 +63,8 @@ $(function (){
 	$social_buttons.find("a.email").bind("click", function (e){
 		e.preventDefault();
 
+		var EASE = "easeOutBack";
+
 		if(messagePanelIsDisplayed){
 			$(this).find("span.highlight").fadeOut(0);
 			$(this).find("span.active").hide();
@@ -70,13 +72,13 @@ $(function (){
 			$nameplate_panel.queue("slide", function (next){
 				$(this).animate({
 					top: (windowHeight - nameplatePanelHeight) / 2
-				}, 300, next);
+				}, 300, EASE, next);
 			}).dequeue("slide");
 
 			$message_panel.queue("slide", function (next){
 				$(this).animate({
 					top: windowHeight
-				}, 300, next);
+				}, 300, EASE, next);
 			}).dequeue("slide");
 		} else {
 			$(this).find("span.active").show();
@@ -85,13 +87,13 @@ $(function (){
 			$nameplate_panel.queue("slide", function (next){
 				$(this).animate({
 					top: (windowHeight - nameplatePanelHeight - messagePanelHeight) / 2
-				}, 300, next);
+				}, 300, EASE, next);
 			}).dequeue("slide");
 
 			$message_panel.queue("slide", function (next){
 				$(this).animate({
 					top: (windowHeight - nameplatePanelHeight + messagePanelHeight) / 2
-				}, 300, next);
+				}, 300, EASE, next);
 			}).dequeue("slide");
 
 		}
