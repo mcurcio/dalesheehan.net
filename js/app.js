@@ -1,7 +1,7 @@
 $(function (){
-	var DEBUG = true,
+	var DEBUG = false,
 		log = (function (){
-			if (console && console.log){
+			if (DEBUG && console && console.log){
 				return console.log.bind(console);
 			} else {
 				return function (){};
@@ -33,8 +33,8 @@ $(function (){
 		windowWidth = $window.innerWidth();
 		windowHeight = $window.innerHeight();
 
-		log("windowWidth: " + windowWidth);
-		log("windowHeight: " + windowHeight);
+		//log("windowWidth: " + windowWidth);
+		//log("windowHeight: " + windowHeight);
 	};
 	updateWindowMetrics();
 
@@ -53,6 +53,82 @@ $(function (){
 	// now that all dimensions have been calculated, some setup
 	$message_panel.css("top", windowHeight);
 	messageState = STATE_MESSAGE_OFFSTAGE;
+
+	// register background tile noise
+	var TILE_NOISE_RATIO = 0.3,
+		TILE_WIDTH = 72,
+		TILE_HEIGHT = 72,
+		TILES_PER_ROW = 5,
+		TILES_PER_COL = 4;
+
+	var tileSpriteWidth = TILE_WIDTH * TILES_PER_ROW,
+		tileSpriteHeight = TILE_HEIGHT * TILES_PER_COL,
+		tileSpriteRowCountIsOdd = TILES_PER_COL % 2 === 1,
+		tileSpriteColCountIsOdd = TILES_PER_ROW % 2 === 1,
+		tileHalfWidth = TILE_WIDTH/2,
+		tileHalfHeight = TILE_HEIGHT/2,
+		tilesAcrossGrid = 0,
+		tilesDownGrid = 0,
+		offsetLeft = 0, 
+		offsetTop = 0;
+
+	var updateGridMetrics = function (){
+		tilesAcrossGrid = Math.ceil(windowWidth / TILE_WIDTH);
+		tilesDownGrid = Math.ceil(windowHeight / TILE_HEIGHT);
+
+		offsetLeft = ((windowWidth / 2) % tileSpriteWidth) + tileSpriteColCountIsOdd*tileHalfWidth,
+		offsetTop = ((windowHeight / 2) % tileSpriteHeight) + tileSpriteRowCountIsOdd*tileHalfHeight;
+
+		//log("tiles across: " + tilesAcrossGrid);
+		//log("tiles down: " + tilesDownGrid);
+		//log("offset left: " + offsetLeft);
+		//log("offset top: " + offsetTop);
+	};
+	updateGridMetrics();
+
+	var tilesInGrid = tilesAcrossGrid * tilesDownGrid,
+		noiseToDraw = Math.ceil(tilesInGrid * TILE_NOISE_RATIO);
+
+	var tilesDownHalfGrid = Math.ceil(tilesDownGrid/2),
+		tilesAcrossHalfGrid = Math.ceil(tilesAcrossGrid/2);
+
+	var $noiseContainer= $("#grid-noise");
+	var noiseCache = {};
+	for (var i = 0; i < noiseToDraw; i++){
+		var tileRow = Math.floor(Math.random() * TILES_PER_ROW),
+			tileCol = Math.floor(Math.random() * TILES_PER_COL);
+
+		// add 1 to the tile count, because we want to choose between 0 and n
+		// inclusive, instead of 0 to n-1 as random() normally chooses
+		var gridRow, gridCol, key;
+		do {
+			gridRow = Math.floor(Math.random()*(tilesDownGrid + 1)) - tilesDownHalfGrid,
+			gridCol = Math.floor(Math.random()*(tilesAcrossGrid + 1)) - tilesAcrossHalfGrid;
+			key = gridRow + "/" + gridCol;
+		} while (noiseCache.hasOwnProperty(key));
+
+		log("row: " + gridRow + ", col: " + gridCol);
+
+		var $tile = $("<div />", {
+			style: "background-position: -" + (tileRow*TILE_HEIGHT) + "px -" + (tileCol*TILE_WIDTH) + "px"
+		});
+
+		if(DEBUG){
+			$tile.html("(" + gridRow + ", " + gridCol + ")");
+			$tile.css({
+				color: "#fff",
+				"font-weight": "bold"
+			});
+		}
+
+		$noiseContainer.append($tile);
+
+		noiseCache[key] = {
+			row: gridRow,
+			col: gridCol,
+			$el: $tile
+		};
+	}
 
 	var resize = function (){
 		var nameplatePanelLeftOffset = (windowWidth - nameplatePanelWidth) / 2,
@@ -83,6 +159,20 @@ $(function (){
 		if (messagePanelTopOffset){
 			$message_panel.css("top", messagePanelTopOffset);
 		}
+
+		// adjust the background noise
+		updateGridMetrics();
+		var originLeft = windowWidth/2 - (tileSpriteColCountIsOdd*tileHalfWidth),
+			originTop = (windowHeight/2) - (tileSpriteRowCountIsOdd*tileHalfHeight);//offsetTop;
+		for (i in noiseCache){
+			if (noiseCache.hasOwnProperty(i)){
+				var item = noiseCache[i];
+				item.$el.css({
+					top: (originTop + item.row*TILE_HEIGHT),
+					left: (originLeft + item.col*TILE_WIDTH)
+				});
+			}
+		}
 	};
 	resize();
 
@@ -102,7 +192,7 @@ $(function (){
 	$social_buttons.find("a.email").bind("click", function (e){
 		e.preventDefault();
 
-		var DURATION = 6000,
+		var DURATION = 600,
 			EASE = "easeOutBack";
 
 		if(messageState !== STATE_MESSAGE_OFFSTAGE){
@@ -149,61 +239,4 @@ $(function (){
 		}
 	});
 
-	// register background tile noise
-	var TILE_NOISE_RATIO = 0.3,
-		TILE_WIDTH = 72,
-		TILE_HEIGHT = 72,
-		TILES_PER_ROW = 5,
-		TILES_PER_COL = 4;
-
-	var tilesInAGridRow = Math.ceil(windowWidth / TILE_WIDTH),
-		tileRowOverflowSize = tilesInAGridRow * TILE_WIDTH - windowWidth,
-		offsetLeft = 0 - tileRowOverflowSize / 2,
-		
-		tilesInAGridCol = Math.ceil(windowHeight / TILE_HEIGHT),
-		tileColOverflowSize = tilesInAGridCol * TILE_HEIGHT - windowHeight,
-		offsetTop = 0 - tileColOverflowSize / 2;
-
-	log("tiles across: " + tilesInAGridRow);
-	log("overflow across: " + tileRowOverflowSize);
-	log("offsetLeft: " + offsetLeft);
-
-	var tilesInGrid = tilesInAGridRow * tilesInAGridCol,
-		noiseToDraw = Math.ceil(tilesInGrid * TILE_NOISE_RATIO);
-	log("adding noise: " + noiseToDraw + " tiles");
-
-	var $noiseContainer= $("#grid-noise");
-	var noiseCache = {};
-	for (var i = 0; i < noiseToDraw; i++){
-		var tileRow = Math.floor(Math.random() * TILES_PER_ROW),
-			tileCol = Math.floor(Math.random() * TILES_PER_COL);
-
-		// add 1 to the tile count, because we want to choose between 0 and n
-		// inclusive, instead of 0 to n-1 as random() normally chooses
-		var gridRow, gridCol, key;
-		do {
-			gridRow = Math.floor(Math.random()*(tilesInAGridCol + 1)),
-			gridCol = Math.floor(Math.random()*(tilesInAGridRow + 1));
-			key = gridRow + "-" + gridCol;
-		} while (noiseCache.hasOwnProperty(key));
-
-		var left = offsetLeft + gridCol*TILE_WIDTH,
-			top = offsetTop + gridRow*TILE_HEIGHT;
-
-		var $tile = $("<div />", {
-			style: [
-				"background-position: -" + (tileRow*TILE_HEIGHT) + "px -" + (tileCol*TILE_WIDTH) + "px",
-				"top: " + top + "px",
-				"left: " + left + "px"
-			].join("; ")
-		});
-
-		$noiseContainer.append($tile);
-
-		noiseCache[key] = {
-			row: gridRow,
-			col: gridCol,
-			$el: $tile
-		};
-	}
 });
